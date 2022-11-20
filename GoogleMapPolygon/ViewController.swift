@@ -14,13 +14,32 @@ class ViewController: UIViewController {
 
     @IBOutlet weak var mapView: GMSMapView!
     
-    let locations = [
-        (latitude: 24.876865529447166, longitude: 67.03823558376935),
-        (latitude: 24.87331461014398, longitude: 67.03684392644044),
-        (latitude: 24.872130947702175, longitude: 67.04397617025117),
-        (latitude: 24.87757570106314, longitude: 67.04275847008836)
+    var nevadaCoordinates: [CLLocationCoordinate2D] = [
+        CLLocationCoordinate2D(
+            latitude: 41.99483623877299,
+            longitude: -119.99917096965822
+        ),
+        CLLocationCoordinate2D(
+            latitude: 41.86407114225792,
+            longitude: -114.0225887305135
+        ),
+        CLLocationCoordinate2D(
+            latitude: 37.11940857325003,
+            longitude: -114.0225887305135
+        ),
+        CLLocationCoordinate2D(
+            latitude: 35.05993939067412,
+            longitude: -114.63782306666128
+        ),
+        CLLocationCoordinate2D(
+            latitude: 38.996381415577794,
+            longitude: -119.98816452566066
+        ),
+        CLLocationCoordinate2D(
+            latitude: 41.986681086642214,
+            longitude: -119.98816452566066
+        )
     ]
-    var polygonCoordinates: [CLLocationCoordinate2D] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,14 +47,12 @@ class ViewController: UIViewController {
         self.title = "Maps Polygon"
         self.addingThemeToMap(fileName: "map_style", fileExtension: "json")
         var points: [CGPoint] = []
-        for location in self.locations {
-            let obj = CLLocationCoordinate2D(latitude: location.latitude, longitude: location.longitude)
-            self.polygonCoordinates.append(obj)
-            let pointObj = CGPoint(x: location.latitude, y: location.longitude)
+        for point in self.nevadaCoordinates {
+            let pointObj = CGPoint(x: point.latitude, y: point.longitude)
             points.append(pointObj)
         }
         
-        self.createPolygon(coordinates: self.polygonCoordinates) { polygon in
+        self.createPolygon(coordinates: self.nevadaCoordinates) { polygon in
             if let polygon = polygon {
                 polygon.fillColor = .red
                 polygon.strokeColor = .black
@@ -45,16 +62,10 @@ class ViewController: UIViewController {
                 let centreOfPolygon = self.polygonCenterOfMass(polygon: points)
                 let centreLocation = CLLocationCoordinate2D(latitude: centreOfPolygon.x, longitude: centreOfPolygon.y)
                 self.mapView.animate(toLocation: centreLocation)
-                self.mapView.animate(toZoom: 14)
+                self.mapView.animate(toZoom: 6)
                 let mapMarker = GMSMarker(position: centreLocation)
-                mapMarker.title = "Hello World"
+                mapMarker.title = "Nevada"
                 mapMarker.map = self.mapView
-                /*
-                 let markerView = UIView()
-                 markerView.frame = CGRect(x: centreOfPolygon.x, y: centreOfPolygon.y, width: 10, height: 10)
-                 markerView.backgroundColor = .green
-                 mapMarker.iconView = markerView
-                 */
             }
         }
     }
